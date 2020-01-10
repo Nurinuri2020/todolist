@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { BrowserRouter as Router, Redirect } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -6,14 +7,21 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
   Container
 } from 'reactstrap'
-
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import RegisterModal from './auth/RegisterModal'
+import Logout from './auth/Logout'
+import LoginModal from './auth/LoginModal'
 
 class AppNavBar extends Component{
     state = {
         isOpen: false
+    };
+
+    static propTypes = {
+        auth: PropTypes.object.isRequired
     }
 
     toggle = () => {
@@ -23,6 +31,58 @@ class AppNavBar extends Component{
     }
 
     render() {
+        const { isAuthenticated, user } = this.props.auth 
+
+        const AuthLinks = (
+            <Fragment>
+                <NavItem>
+                    <span className="navbar-text mr-3">
+                        <strong>{ user ? `Welcome, ${user.name}! `: ''}</strong>
+                    </span>
+                </NavItem>
+                <NavItem>
+                    <Logout />
+                </NavItem>
+            </Fragment>
+        )
+
+            
+        const guestLinks = (
+            <Fragment>
+                <NavItem>
+                    <RegisterModal />
+                </NavItem>
+                <NavItem>
+                    <LoginModal />
+                </NavItem>
+            </Fragment>
+        )
+
+        const redirectToProfile = (
+            
+                    <Router>
+                    
+                        <Redirect to="/profile" />
+                    
+                    </Router>
+                
+                
+            
+        )
+
+        const notRedirectToProfile = (
+            
+                <Router>
+                    
+                        <Redirect to="/" />
+                    
+                </Router>
+            
+                
+                
+            
+        )
+            
         return(
             <div>
             <Navbar color = "dark" dark expand = "sm" className = "mb-5">
@@ -31,11 +91,8 @@ class AppNavBar extends Component{
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className = "ml-auto" navbar>
-                            <NavItem>
-                                <NavLink href="https://github.com/NuraiM1998" target="_blank">
-                                    Github
-                                </NavLink>
-                            </NavItem>
+                            { isAuthenticated ? AuthLinks : guestLinks }
+                            { isAuthenticated ? redirectToProfile: notRedirectToProfile }          
                         </Nav>
                     </Collapse>
                 </Container>
@@ -47,6 +104,8 @@ class AppNavBar extends Component{
 }
 
 
+const mapStateToProps = state => ({
+    auth: state.auth
+});
 
-
-export default AppNavBar;
+export default connect(mapStateToProps, null)(AppNavBar);

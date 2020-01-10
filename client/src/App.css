@@ -15,3 +15,22 @@
   opacity: 0.01;
   transition: opacity 1000ms ease-in; 
 }
+
+.footer{
+  height: 80px;
+  width: 100%;
+  background-color: rgb(27, 31, 31);
+  position: fixed;
+  bottom: 0;
+}
+
+.footer-inside{
+  text-align: center;
+  color: white;
+  vertical-align: middle;
+  padding: 30px;
+}
+.footer-link{
+  color: white;
+  text-decoration: underline;
+}
